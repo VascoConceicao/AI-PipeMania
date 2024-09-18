@@ -1,0 +1,3 @@
+VB	VB	FC
+LH	LH	LH
+VC	BB	VB
