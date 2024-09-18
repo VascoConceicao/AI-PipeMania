@@ -1,0 +1,33 @@
+1. Breve descrição do problema (regras e objetivo).
+Este projeto consiste em desenvolver um programa em Python cujo objetivo é resolver uma adaptação do jogo PipeMania. O jogador precisa de rodar as peças numa grelha quadrada, para que todas fiquem na única posição correta em que a água pode circular sem fugas por todas as peças.
+
+
+2. Descrição da ideia geral para abordar o problema.
+A nossa abordagem passa por tratar o problema como um problema de satisfação de restrições, usando procura e inferência. O nosso estado é então um conjunto de variáveis, que podem assumir valores num certo domínio e podem ter restrições. Uma variável é simplesmente uma posição da grelha, por exemplo, uma grelha 3x3 tem 9 variáveis. Um domínio é o conjunto de peças admissíveis para essa posição. As restrições entre variáveis representam os requisitos de adjacência atendendo aos seus domínios.
+O estado inicial é composto pelos domínios completos, ou seja, inicialmente a grelha está vazia. A ideia é que, à medida que são realizadas ações, os domínios são progressivamente restringidos até terem apenas um elemento, preenchendo a grelha.
+
+
+3. Identificação do que é uma ação no contexto do problema.
+Na nossa solução, uma ação é composta por uma linha, uma coluna e uma peça, e representa uma escolha de valor de uma variável.
+
+
+4. Descrição do que é o resultado de aplicar uma ação num estado.
+Aplicar uma ação num estado é escolher a orientação da peça numa posição: atribuir o valor, isto é, a peça, à variável, restringindo o domínio dessa posição somente a esse valor e também propagar os seus efeitos nos restantes domínios. A partir de um estado, só se pode realizar ações sobre a variável escolhida. (FALAR SOBRE POSIÇÕES INVÁLIDAS)
+
+
+5. Caso exista algum tipo de pre-processamento ou métodos de inferência, estes devem ser
+mencionados.
+A inferência é um aspeto crucial na nossa solução, mas como é que é feita? Admitindo que um domínio foi restringido, propagamos as consequências dessa alteração utilizando apenas dois princípios.
+- O primeiro é que se uma peça do domínio da posição adjacente deixou de se conseguir conectar com a posição atual, temos de a eliminar do domínio da posição adjacente. 
+- O segundo é que, como as orientações possíveis diminuiram, agora pode dar-se o caso de todas as orientações possíveis apontarem para uma certa posição adjacente. Portanto temos de eliminar do domínio da posição adjacente qualquer peça que não aponte de volta.
+- O pré-processamento que utilizámos foi apenas ir a todas as posições da grelha, retirar do domínio as peças que apontam para fora e propagar as alterações.
+
+
+6. Identificação da procura final selecionada, quais as suas características (heurística, por
+exemplo), e motivo da escolha.
+Para a procura, utilizámos a procura em profundidade primeiro, uma vez que possibilita retrocesso. 
+Utilizámos ainda algumas heurísticas de modo a guiar a procura. Para decidir a próxima posição para a qual escolhemos um valor, utilizamos a heurística dos valores remanescentes mínimos seguida da heurística de maior grau, em caso de empate. Para escolher qual das possíveis orientações a que testar primeiro, utilizámos a heurística do valor menos restritivo. Conseguimos fazer isso na procura em profundidade primeiro ao ordenar os valores na ações de um estado com base neste critério.
+
+
+7. Pequena avaliação experimental comparando diferentes procuras com as instâncias disponibilizadas.
+Para averiguar a utilidade das heurísticas na parte da procura, testámos 100 instâncias diferentes do problema PipeMania 25x25, com e sem heurísticas. Os resultados foram de acordo com a previsão, já que, de facto, tanto o tempo como o número de nós expandido era menor. Em termos quantitativos, a melhoria foi de cerca de 35% em média em ambas as métricas, mas observamos que quanto mais difícil fosse chegar à solução, maior a vantagem de usar heurísticas. Tentámos ainda testar a importância da inferência, mas vimos que era absolutamente necessária a sua presença, sem esta o algoritmo claramente ultrapassava os limites de tempo.
